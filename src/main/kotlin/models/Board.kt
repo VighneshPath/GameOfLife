@@ -19,7 +19,9 @@ class Board(private val size: Int, private val liveCellLocations: List<Location>
     }
 
     fun startGame(){
-        val previousBoardState = boardState.map { it -> it.map{it.copy()})}
+        val previousBoardState = boardState.map {it->it.map{ele-> ele.copy()}}
+
+
     }
 
 }

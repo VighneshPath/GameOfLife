@@ -1,10 +1,10 @@
 package models.cells
 
 class LiveCell : Cell{
-    override fun updateState(noOfLiveNeighbors: Int): Boolean {
-        if(noOfLiveNeighbors < 2 || noOfLiveNeighbors > 3) return true
+    override fun updateState(noOfLiveNeighbors: Int): Cell {
+        if(noOfLiveNeighbors < 2 || noOfLiveNeighbors > 3) return DeadCell()
 
-        return false
+        return this
     }
 
     override fun copy(): Cell {
