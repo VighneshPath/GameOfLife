@@ -11,6 +11,10 @@ class DeadCell: Cell{
         return DeadCell()
     }
 
+    override fun isLive(): Boolean {
+        return false
+    }
+
     override fun toString(): String {
         return "-"
     }

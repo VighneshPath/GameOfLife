@@ -11,6 +11,10 @@ class LiveCell : Cell{
         return LiveCell()
     }
 
+    override fun isLive(): Boolean {
+        return true
+    }
+
     override fun toString(): String {
         return "O"
     }
