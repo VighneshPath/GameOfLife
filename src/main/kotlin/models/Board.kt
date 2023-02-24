@@ -6,7 +6,7 @@ import models.cells.LiveCell
 import java.io.File
 
 class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
-    private var boardState : MutableList<MutableList<Cell>> = MutableList(boardSize){ MutableList<Cell>(boardSize){ DeadCell() } }
+    private var boardState : MutableList<MutableList<Cell>> = MutableList(boardSize){ MutableList(boardSize){ DeadCell() } }
 
     init{
         for(location in listOfLiveLocations){
@@ -14,8 +14,8 @@ class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
         }
     }
 
-    fun startGame(iterations: Int){
-        var previousBoardState = boardState.map { it->it.map{ ele-> ele.copy()}}
+    fun startGame(iterations: Int, printToFile:Boolean=false){
+        var previousBoardState = boardState.map { it.map{ ele-> ele.copy()}}
 
         for(iteration in 0 until iterations){
             for(row in 0 until boardState.size){
@@ -25,9 +25,11 @@ class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
                     boardState[row][column] = boardState[row][column].updateState(neighbors)
                 }
             }
-            printBoard()
-            Thread.sleep(1000)
-            previousBoardState = boardState.map {it->it.map{ele-> ele.copy()}}
+            if(printToFile){
+                printBoard()
+                Thread.sleep(1000)
+            }
+            previousBoardState = boardState.map {it.map{ele-> ele.copy()}}
         }
     }
 
@@ -68,7 +70,7 @@ class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
         return count
     }
 
-    fun printBoard(){
+    private fun printBoard(){
         File("someFile.txt").bufferedWriter().use { out ->
             for(row in 0 until boardState.size){
                 for(column in 0 until boardState.size){
