@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="models.BoardTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-02-24T09:09:39" hostname="Vigneshs-MacBook-Pro.local" time="0.03">
+  <properties/>
+  <testcase name="should die after one iteration()" classname="models.BoardTest" time="0.03"/>
+  <system-out><![CDATA[3
+0
+0
+3
+-0
+1
+3
+O0
+2
+3
+O1
+0
+3
+-1
+1
+3
+-1
+2
+3
+-2
+0
+3
+-2
+1
+3
+-2
+2
+3
+-]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
