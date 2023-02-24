@@ -3,8 +3,9 @@ package models
 import models.cells.Cell
 import models.cells.DeadCell
 import models.cells.LiveCell
+import java.io.File
 
-class Board(private val listOfLiveLocations: List<Location>, private val boardSize: Int){
+class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
     private var boardState : MutableList<MutableList<Cell>> = MutableList(boardSize){ MutableList<Cell>(boardSize){ DeadCell() } }
 
     init{
@@ -24,6 +25,8 @@ class Board(private val listOfLiveLocations: List<Location>, private val boardSi
                     boardState[row][column] = boardState[row][column].updateState(neighbors)
                 }
             }
+            printBoard()
+            Thread.sleep(1000)
             previousBoardState = boardState.map {it->it.map{ele-> ele.copy()}}
         }
     }
@@ -50,7 +53,6 @@ class Board(private val listOfLiveLocations: List<Location>, private val boardSi
             Pair(1, 0),
             Pair(1, 1))
 
-        println("$row $column")
         var count = 0
 
         for(offset in offsets){
@@ -63,8 +65,19 @@ class Board(private val listOfLiveLocations: List<Location>, private val boardSi
                 count+=1
             }
         }
-        println(count)
         return count
     }
 
+    fun printBoard(){
+        File("someFile.txt").bufferedWriter().use { out ->
+            for(row in 0 until boardState.size){
+                for(column in 0 until boardState.size){
+                    out.write(boardState[row][column].toString())
+                    out.write(" ")
+                }
+                out.write("\n")
+            }
+        }
+
+    }
 }
