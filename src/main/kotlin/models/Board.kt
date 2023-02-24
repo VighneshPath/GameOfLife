@@ -1,11 +1,20 @@
 package models
 
 import models.cells.Cell
+import models.cells.DeadCell
+import models.cells.LiveCell
 
-class Board(private var boardState : MutableList<MutableList<Cell>>){
+class Board(private val listOfLiveLocations: List<Location>, private val boardSize: Int){
+    private var boardState : MutableList<MutableList<Cell>> = MutableList(boardSize){ MutableList<Cell>(boardSize){ DeadCell() } }
+
+    init{
+        for(location in listOfLiveLocations){
+            boardState[location.row][location.column] = LiveCell()
+        }
+    }
 
     fun startGame(iterations: Int): List<List<Cell>>{
-        val previousBoardState = boardState.map {it->it.map{ele-> ele.copy()}}
+        var previousBoardState = boardState.map { it->it.map{ ele-> ele.copy()}}
 
         for(iteration in 0 until iterations){
             for(row in 0 until boardState.size){
@@ -15,6 +24,7 @@ class Board(private var boardState : MutableList<MutableList<Cell>>){
                     boardState[row][column] = boardState[row][column].updateState(neighbors)
                 }
             }
+            previousBoardState = boardState.map {it->it.map{ele-> ele.copy()}}
         }
 
         return boardState
