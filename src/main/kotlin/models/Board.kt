@@ -13,7 +13,7 @@ class Board(private val listOfLiveLocations: List<Location>, private val boardSi
         }
     }
 
-    fun startGame(iterations: Int): List<List<Cell>>{
+    fun startGame(iterations: Int){
         var previousBoardState = boardState.map { it->it.map{ ele-> ele.copy()}}
 
         for(iteration in 0 until iterations){
@@ -26,8 +26,18 @@ class Board(private val listOfLiveLocations: List<Location>, private val boardSi
             }
             previousBoardState = boardState.map {it->it.map{ele-> ele.copy()}}
         }
+    }
 
-        return boardState
+    fun getListOfLiveLocations(): List<Location>{
+        val result = mutableListOf<Location>()
+        for(row in 0 until boardState.size){
+            for(column in 0 until boardState.size){
+                if(boardState[row][column].isLive()) {
+                    result.add(Location(row, column))
+                }
+            }
+        }
+        return result
     }
 
     private fun getNearestLiveNeighbours(row: Int, column: Int, boardState: List<List<Cell>>): Int {

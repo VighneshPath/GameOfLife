@@ -15,19 +15,16 @@ class BoardTest{
         val boardSize = 3
         val liveCellLocations = listOf(Location(1, 0), Location(1, 1), Location(1, 2))
         board = Board(liveCellLocations, boardSize)
+        val expectedLiveLocations = listOf(Location(0, 1),
+            Location(1, 1),
+            Location(2, 1))
 
-        val returnedBoard = board.startGame(1)
+        board.startGame(1)
+        val returnedList = board.getListOfLiveLocations()
 
-
-        assertIs<DeadCell>(returnedBoard[0][0])
-        assertIs<LiveCell>(returnedBoard[0][1])
-        assertIs<DeadCell>(returnedBoard[0][2])
-        assertIs<DeadCell>(returnedBoard[1][0])
-        assertIs<LiveCell>(returnedBoard[1][1])
-        assertIs<DeadCell>(returnedBoard[1][2])
-        assertIs<DeadCell>(returnedBoard[2][0])
-        assertIs<LiveCell>(returnedBoard[2][1])
-        assertIs<DeadCell>(returnedBoard[2][2])
+        assertTrue((expectedLiveLocations.size == returnedList.size) &&
+                expectedLiveLocations.containsAll(returnedList) &&
+                returnedList.containsAll(expectedLiveLocations))
     }
 
     @Test
@@ -35,12 +32,16 @@ class BoardTest{
         val boardSize = 3
         val liveCellLocations = listOf(Location(1, 0), Location(1, 1), Location(1, 2))
         board = Board(liveCellLocations, boardSize)
+        val expectedLiveLocations = listOf(Location(1, 0),
+            Location(1, 2),
+            Location(1, 1))
 
-        val returnedBoard = board.startGame(2)
+        board.startGame(2)
+        val returnedList = board.getListOfLiveLocations()
 
-        assertIs<LiveCell>(returnedBoard[1][0])
-        assertIs<LiveCell>(returnedBoard[1][2])
-        assertIs<LiveCell>(returnedBoard[1][1])
+        assertTrue((expectedLiveLocations.size == returnedList.size) &&
+                expectedLiveLocations.containsAll(returnedList) &&
+                returnedList.containsAll(expectedLiveLocations))
     }
 
 }
