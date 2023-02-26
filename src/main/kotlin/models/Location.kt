@@ -1,4 +1,4 @@
 package models
 
-data class Location(val row: Int, val column: Int){
+data class Location(val row: Long, val column: Long){
 }

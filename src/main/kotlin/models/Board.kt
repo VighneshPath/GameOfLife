@@ -1,51 +1,38 @@
 package models
 
-import models.cells.Cell
-import models.cells.DeadCell
-import models.cells.LiveCell
-import java.io.File
-
-class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
-    private var boardState : MutableList<MutableList<Cell>> = MutableList(boardSize){ MutableList(boardSize){ DeadCell() } }
+class Board(setOfLiveLocations: List<Location>){
+    private var setOfLiveCells : MutableSet<Location> = mutableSetOf()
 
     init{
-        for(location in listOfLiveLocations){
-            boardState[location.row][location.column] = LiveCell()
-        }
+        setOfLiveCells = setOfLiveLocations.toMutableSet()
     }
 
-    fun startGame(iterations: Int, printToFile:Boolean=false){
-        var previousBoardState = boardState.map { it.map{ ele-> ele.copy()}}
-
+    fun startGame(iterations: Long): List<Location> {
         for(iteration in 0 until iterations){
-            for(row in 0 until boardState.size){
-                for(column in 0 until boardState.size){
-                    val neighbors = getNearestLiveNeighbours(row, column, previousBoardState)
+            val newSetOfLiveCells : MutableSet<Location> = mutableSetOf()
+            val currentNeighbourLiveCount = mutableMapOf<Location, Long>()
+            setOfLiveCells.forEach{
+                updateNeighboursLiveCount(it, currentNeighbourLiveCount)
+            }
 
-                    boardState[row][column] = boardState[row][column].updateState(neighbors)
+            currentNeighbourLiveCount.forEach { (location, liveCellCount)->
+                if(liveCellCount == 3L ||
+                    (liveCellCount == 2L && isCellAlive(location.row, location.column))){
+                    newSetOfLiveCells.add(location)
                 }
             }
-            if(printToFile){
-                printBoard()
-                Thread.sleep(1000)
-            }
-            previousBoardState = boardState.map {it.map{ele-> ele.copy()}}
+
+            setOfLiveCells = newSetOfLiveCells
         }
+
+        return setOfLiveCells.toList()
     }
 
-    fun getListOfLiveLocations(): List<Location>{
-        val result = mutableListOf<Location>()
-        for(row in 0 until boardState.size){
-            for(column in 0 until boardState.size){
-                if(boardState[row][column].isLive()) {
-                    result.add(Location(row, column))
-                }
-            }
-        }
-        return result
+    private fun isCellAlive(row: Long, column: Long): Boolean{
+        return setOfLiveCells.contains(Location(row, column))
     }
 
-    private fun getNearestLiveNeighbours(row: Int, column: Int, boardState: List<List<Cell>>): Int {
+    private fun updateNeighboursLiveCount(location: Location, currentNeighbourLiveCount : MutableMap<Location, Long>) {
         val offsets = listOf(Pair(-1, -1),
             Pair(-1, 0),
             Pair(-1, 1),
@@ -55,31 +42,14 @@ class Board(listOfLiveLocations: List<Location>, private val boardSize: Int){
             Pair(1, 0),
             Pair(1, 1))
 
-        var count = 0
-
         for(offset in offsets){
-            val k = row + offset.first
-            val l = column + offset.second
+            val k = location.row + offset.first
+            val l = location.column + offset.second
 
-            if(0<=k && k<boardState.size &&
-                0<=l && l<boardState.size &&
-                boardState[k][l].isLive()){
-                count+=1
+            if(0<=k && 0<=l){
+                currentNeighbourLiveCount.putIfAbsent(Location(k, l), 0L)
+                currentNeighbourLiveCount[Location(k, l)] = currentNeighbourLiveCount[Location(k, l)]!!+1L
             }
         }
-        return count
-    }
-
-    private fun printBoard(){
-        File("someFile.txt").bufferedWriter().use { out ->
-            for(row in 0 until boardState.size){
-                for(column in 0 until boardState.size){
-                    out.write(boardState[row][column].toString())
-                    out.write(" ")
-                }
-                out.write("\n")
-            }
-        }
-
     }
 }
